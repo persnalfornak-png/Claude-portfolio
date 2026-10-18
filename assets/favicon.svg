@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Noah Kline monogram. Black field, white "N" split by a horizontal seam —
+       a nod to the torn-paper registration in the Layering series. -->
+  <rect width="64" height="64" fill="#000000"/>
+  <g fill="#ffffff">
+    <!-- upper half of the N, nudged right: the fragment that does not line up -->
+    <path d="M17 13 h7 l13 17 V13 h7 v17 h-7 l-13 -17 V30 h-7 Z"/>
+    <!-- lower half, in register -->
+    <path d="M15 34 h7 l13 17 V34 h7 v17 h-7 l-13 -17 V51 h-7 Z"/>
+  </g>
+</svg>
