@@ -3,55 +3,221 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Noah Kline — Photography</title>
-<style>
-  :root { --bg:#0a0a0a; --fg:#f2f2f2; --accent:#c9a876; }
-  * { box-sizing: border-box; margin:0; padding:0; }
-  body { background:var(--bg); color:var(--fg); font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif; line-height:1.6; }
-  header { padding: 6rem 2rem 3rem; text-align:center; }
-  header h1 { font-size: 2.5rem; font-weight:300; letter-spacing: 0.05em; }
-  header p { color: #999; margin-top: 0.5rem; font-size: 1rem; }
-  nav { display:flex; justify-content:center; gap:2rem; padding: 1rem 0 3rem; border-bottom: 1px solid #222; }
-  nav a { color:#ccc; text-decoration:none; font-size:0.95rem; letter-spacing:0.03em; transition: color 0.2s; }
-  nav a:hover { color: var(--accent); }
-  .gallery { display:grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 4px; padding: 2px; }
-  .gallery figure { margin:0; overflow:hidden; aspect-ratio: 4/3; background:#111; }
-  .gallery img { width:100%; height:100%; object-fit:cover; display:block; transition: transform 0.4s ease; }
-  .gallery figure:hover img { transform: scale(1.05); }
-  section { padding: 4rem 2rem; max-width: 900px; margin: 0 auto; }
-  footer { text-align:center; padding: 3rem 2rem; color:#666; font-size:0.85rem; border-top:1px solid #222; margin-top:2rem;}
-  a.contact { color: var(--accent); text-decoration:none; }
-  .placeholder { display:flex; align-items:center; justify-content:center; color:#555; font-size:0.85rem; height:100%; }
-</style>
+<title>Noah Kline — Portfolio</title>
+<meta name="description" content="University creative portfolio: photography, black &amp; white studies, CG and motion work. Built around clarity — no noise, just the work.">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="alternate icon" href="assets/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<meta name="theme-color" content="#000000">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Noah Kline">
+<meta property="og:title" content="Noah Kline — Portfolio">
+<meta property="og:description" content="University creative portfolio: photography, black &amp; white studies, CG and motion work. Built around clarity — no noise, just the work.">
+<meta property="og:image" content="assets/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Noah Kline — Portfolio">
+<meta name="twitter:description" content="University creative portfolio: photography, black &amp; white studies, CG and motion work. Built around clarity — no noise, just the work.">
+<meta name="twitter:image" content="assets/og-image.jpg">
+<link rel="stylesheet" href="assets/css/site.css">
 </head>
 <body>
-<header>
-  <h1>NOAH KLINE</h1>
-  <p>Photography</p>
-</header>
-<nav>
-  <a href="#gallery">Gallery</a>
-  <a href="#about">About</a>
-  <a href="#contact">Contact</a>
+
+<!-- Film grain overlay (Phase 3). Delete this one div to remove it site-wide. -->
+<div class="grain" aria-hidden="true"></div>
+
+<nav class="global">
+  <a class="brand" href="index.html">Noah Kline</a>
+  <span class="nav-links">
+    <a href="index.html#work">Work</a>
+    <a href="index.html#about">About</a>
+    <a href="index.html#contact">Contact</a>
+  </span>
 </nav>
-<section id="gallery">
-  <div class="gallery">
-    <figure><div class="placeholder">Photo coming soon</div></figure>
-    <figure><div class="placeholder">Photo coming soon</div></figure>
-    <figure><div class="placeholder">Photo coming soon</div></figure>
-    <figure><div class="placeholder">Photo coming soon</div></figure>
-    <figure><div class="placeholder">Photo coming soon</div></figure>
-    <figure><div class="placeholder">Photo coming soon</div></figure>
+
+<!-- =====================================================================
+     VIDEO HERO (Phase 2)
+     SWAPPING THE CLIP: replace video/hero.mp4 (and video/hero-poster.jpg for
+     the still fallback). Nothing in CSS or JS is specific to this clip.
+     ROUND 4: Noah picked the clip himself — REREDO.mp4 (Drive id
+     12Iyee1kgzJZZkWHzu5N-V55RZ9g4pGbD), the window 00:24-00:37. It is the same
+     Lost Spring pool glide family as the Round 3 hero but a longer, steadier,
+     graded pass. 1278x720 @30fps, 4.4 MB; hero-540.mp4 is the 960x540 / 1.9 MB
+     phone variant.
+     ONE DELIBERATE DEVIATION: the cut ends at 12.37s, not the full 13s. The
+     Lost Spring "TLS" end-card logo starts fading up over the footage at
+     ~12.4s, and a loop that flashes a client logo before snapping back to the
+     start reads as a glitch. To restore the literal 13s, re-run:
+       ./_vidxcode video/_tmp-full720.mp4 video/hero.mp4 24 13 1278 720 2800 1
+     SOURCE NOTE: REREDO.mp4 is AV1 (av01). AVFoundation on this M1 cannot
+     decode it at all, so neither _vidtool nor _vidxcode can read the original.
+     VLC (already installed) does the AV1 -> H.264 step; see TODO.md Round 4.
+     ===================================================================== -->
+<header class="hero-video">
+  <div class="poster" style="background-image:url('video/hero-poster.jpg')" aria-hidden="true"></div>
+  <video data-hero-video data-src-small="video/hero-540.mp4" autoplay muted loop playsinline preload="auto"
+         poster="video/hero-poster.jpg" aria-hidden="true" tabindex="-1">
+    <source src="video/hero.mp4" type="video/mp4">
+  </video>
+  <div class="scrim" aria-hidden="true"></div>
+
+  <div class="content stagger in">
+    <h1 class="t-hero">Design.<br>Refined.</h1>
+    <p class="lead t-lead">A university portfolio built around clarity — no noise, no decoration for its own sake. Just the work.</p>
+    <div class="cta-row">
+      <a class="btn btn-primary magnetic" href="#work">See the work</a>
+      <a class="btn btn-ghost-on-dark magnetic" href="#about">About me</a>
+    </div>
+  </div>
+  <div class="scroll-hint" aria-hidden="true">Scroll</div>
+</header>
+
+<!-- =====================================================================
+     FEATURED AWARD (Round 4, item 2)
+     National Youth Art Awards (NZ) finalist photograph + Noah's artist
+     statement. Source file: BW Hands/_MG_3085.jpg (Drive id
+     1Ve5BBigZjfI5M_3NnSz-krw3OQLk5_KD), 3432x5472 original.
+     CORRECTION (Round 5, 2026-10-08): Round 4 originally used _MG_3086.jpg.
+     Noah corrected himself — the finalist frame is _MG_3085.jpg (the denser
+     triple-exposure variant, hands doubled on both sides of the face). The
+     old assets/award/mg3086*.jpg files were deleted. Do not reinstate them.
+     Displayed at 940x1500; the lightbox loads the 1380x2200
+     version via data-full.
+     WORDING: Noah confirmed "finalist" only. Do NOT upgrade this to a
+     placement, prize or year — nothing beyond finalist has been confirmed.
+     PLACEMENT: this supersedes the earlier plan to put the award photo in the
+     Wide Span Sheds 3rd gallery slot. That slot keeps its Round 3 video.
+     ===================================================================== -->
+<section class="award reveal" id="award" aria-labelledby="award-title">
+  <div class="inner">
+    <figure class="award-figure" data-lightbox="National Youth Art Awards">
+      <img class="rests" src="assets/award/mg3085.jpg" data-full="assets/award/mg3085-full.jpg"
+           alt="Black and white multiple-exposure self portrait, hands covering the face — National Youth Art Awards finalist"
+           width="940" height="1500" loading="lazy" decoding="async">
+    </figure>
+    <div class="award-copy">
+      <div class="award-label">National Youth Art Awards NZ &middot; Finalist</div>
+      <h2 class="t-display" id="award-title">Artist Statement</h2>
+      <blockquote class="award-statement">This photograph explores the internal and external layers of identity and can reveal the contrast between how a person feels within themselves and how they present to the world. Through this visual symbolism, the image communicates hidden emotions, values, memories, and social expectations, showing identity as complex, evolving, and deeply personal.</blockquote>
+      <p class="award-credit">From <a class="link" href="work/bw-hands.html">BW Hands</a> &mdash; black &amp; white double-exposure portraits.</p>
+    </div>
   </div>
 </section>
-<section id="about">
-  <h2 style="font-weight:300; margin-bottom:1rem;">About</h2>
-  <p style="color:#bbb;">Photographer based in New Zealand. Portfolio under construction — check back soon for the full gallery.</p>
+
+<!-- ===================== WORK TILES ===================== -->
+<div class="tile-row" id="work">
+  <a class="tile dark reveal" href="work/layering.html">
+    <!-- ROUND 3 (item 3): was layering/hero.jpg — a photo of the print still on its
+         white mount, so pale paper edges showed down both sides of the tile crop,
+         and it carried a blue cast while every other tile is B&W. tile-bw.jpg is
+         the same artwork cropped inside the mount (1180x1760) and converted to a
+         true neutral greyscale profile. Centre the crop: no edge to hide now. -->
+    <div class="img-slot" style="background-image:url('assets/layering/tile-bw.jpg'); background-position:center 38%;"></div>
+    <div class="content">
+      <h2>Layering</h2>
+      <p>Torn-paper photomontage</p>
+      <span class="link">View case study &rsaquo;</span>
+    </div>
+  </a>
+  <a class="tile light reveal" href="work/bw-hands.html">
+    <div class="img-slot" style="background-image:url('assets/bwhands/hero.jpg'); background-position:center 20%;"></div>
+    <div class="content">
+      <h2>BW Hands</h2>
+      <p>B&amp;W double-exposure portraits</p>
+      <span class="link">View case study &rsaquo;</span>
+    </div>
+  </a>
+  <a class="tile dark-2 reveal" href="work/drifting.html">
+    <div class="img-slot" style="background-image:url('assets/drifting/hero.jpg'); background-position:center 45%;"></div>
+    <div class="content">
+      <h2>Wide Span Sheds</h2>
+      <p>Commercial customer-story films</p>
+      <span class="link">View case study &rsaquo;</span>
+    </div>
+  </a>
+  <a class="tile dark reveal" href="work/sailing.html">
+    <!-- ROUND 5: Noah asked for this specific photograph as the Sailing tile —
+         "Capture 7299 - Copy.JPG" (Drive id 1O1AivetrYh0kcQIC_2s-VmrzsJWDHPMA),
+         saved as assets/sailing/tile.jpg. A backlit keelboat against the
+         Whitianga headland, 1324x680 — small, but it is the file he named.
+         It supersedes Round 3's assets/sailing/cover.jpg frame grab, which is
+         still used for the case-study hero and gallery.
+         Position is center 60% so the hull and crew clear the caption scrim. -->
+    <div class="img-slot" style="background-image:url('assets/sailing/tile.jpg'); background-position:center 60%;"></div>
+    <div class="content">
+      <h2>Sailing</h2>
+      <p>On-the-water documentary</p>
+      <span class="link">View case study &rsaquo;</span>
+    </div>
+  </a>
+  <a class="tile dark-2 reveal" href="work/lost-spring.html">
+    <!-- ROUND 3 (item 4): new background. Frame @43s of Tls pool lap 1 — the
+         red-roofed pavilions over the pool. The old hero.jpg was another green
+         pool frame, so this full-width tile just repeated the hero video. -->
+    <div class="img-slot" style="background-image:url('assets/lostspring/finial.jpg'); background-position:center 40%;"></div>
+    <div class="content">
+      <h2>The Lost Spring</h2>
+      <p>One-take day spa films</p>
+      <span class="link">View case study &rsaquo;</span>
+    </div>
+  </a>
+</div>
+
+<!-- ===================== NUMBERS STRIP (Phase 7) =====================
+     ROUND 2: these are Noah's real figures, confirmed 2026-10-07.
+       2.5 years taking photos  |  1.5 years shooting video  |  2 years of
+       photography classes at school.
+     There is deliberately NO "projects completed" figure — Noah has no hard
+     number for it and inventing one would be dishonest. If he supplies one
+     later, add a fourth <div> in the same shape.
+     The count-up reads data-count / data-suffix; data-decimals renders a
+     fractional value (see site.js). Edit the .l text for labels.          -->
+<section class="numbers reveal" aria-label="By the numbers">
+  <div class="inner">
+    <div><div class="n"><span data-count="2.5" data-decimals="1">2.5</span></div><div class="l">Years shooting photography</div></div>
+    <div><div class="n"><span data-count="1.5" data-decimals="1">1.5</span></div><div class="l">Years shooting video</div></div>
+    <div><div class="n"><span data-count="2">2</span></div><div class="l">Years of photography classes</div></div>
+  </div>
 </section>
-<section id="contact">
-  <h2 style="font-weight:300; margin-bottom:1rem;">Contact</h2>
-  <p style="color:#bbb;">Get in touch: <a class="contact" href="mailto:hello@example.com">hello@example.com</a></p>
+
+<!-- ===================== ABOUT ===================== -->
+<section class="section center reveal" id="about">
+  <div class="eyebrow">About</div>
+  <h2 class="t-display">Who made this.</h2>
+  <p class="body">Short bio goes here — background, what you studied, what you're looking for. Keep it to 2–3 sentences; let the work speak louder.</p>
+  <p><a class="link" href="mailto:persnalfornak@gmail.com">Get in touch &rsaquo;</a></p>
 </section>
-<footer>&copy; 2026 Noah Kline Photography</footer>
+
+<!-- ===================== GALLERY ===================== -->
+<section class="section center reveal">
+  <div class="eyebrow">Gallery</div>
+  <h2 class="t-display">Snapshots</h2>
+</section>
+<div class="gallery cols-3 reveal" data-lightbox="Snapshots">
+  <img src="assets/sailing/overhead.jpg" alt="Sailing — rainbow sail shot directly overhead" loading="lazy">
+  <img src="assets/layering/benkoshup.jpg" alt="Layering series — paired portrait study" loading="lazy">
+  <img src="assets/drifting/drift-slide.jpg" alt="Wide Span Sheds — drift car sliding through smoke, track level" loading="lazy">
+  <img src="assets/bwhands/3068.jpg" alt="Black and white hand study" loading="lazy">
+  <img src="assets/lostspring/pool-a.jpg" alt="The Lost Spring — mineral pool through the bush" loading="lazy">
+  <img src="assets/layering/hayden.jpg" alt="Layering series — single portrait" loading="lazy">
+  <img src="assets/bwhands/3051.jpg" alt="Black and white hand study, close crop" loading="lazy">
+  <img src="assets/drifting/garage-portrait.jpg" alt="Wide Span Sheds — client portrait in the garage" loading="lazy">
+  <img src="assets/bwhands/eyeshot.jpg" alt="Black and white study — eye detail" loading="lazy">
+</div>
+
+<footer class="site" id="contact">
+  <div class="links">
+    <a href="mailto:persnalfornak@gmail.com">Email</a>
+    <a href="index.html#work">Work</a>
+    <a href="index.html#about">About</a>
+  </div>
+  &#9875; <b>Noah Kline</b> &middot; Portfolio &middot; 2026
+</footer>
+
+<script src="assets/js/site.js"></script>
+<script src="assets/js/lightbox.js"></script>
+<!-- OPTIONAL: magnetic buttons. Delete this one line to remove the effect. -->
+<script src="assets/js/magnetic.js"></script>
 </body>
 </html>

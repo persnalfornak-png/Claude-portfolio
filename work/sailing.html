@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sailing — Noah Kline</title>
+<meta name="description" content="On-the-water documentary: FPV drone and on-boat coverage of catamaran racing along the coast.">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="alternate icon" href="../assets/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<meta name="theme-color" content="#000000">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Noah Kline">
+<meta property="og:title" content="Sailing — Noah Kline">
+<meta property="og:description" content="On-the-water documentary: FPV drone and on-boat coverage of catamaran racing along the coast.">
+<meta property="og:image" content="../assets/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Sailing — Noah Kline">
+<meta name="twitter:description" content="On-the-water documentary: FPV drone and on-boat coverage of catamaran racing along the coast.">
+<meta name="twitter:image" content="../assets/og-image.jpg">
+<link rel="stylesheet" href="../assets/css/site.css">
+</head>
+<body>
+
+<div class="grain" aria-hidden="true"></div>
+<nav class="global">
+  <a class="brand" href="../index.html">Noah Kline</a>
+  <span class="nav-links">
+    <a href="../index.html#work">Work</a>
+    <a href="../index.html#about">About</a>
+    <a href="../index.html#contact">Contact</a>
+  </span>
+</nav>
+
+<!-- ROUND 3 (item 6): every still on this page was replaced. The old set was cut
+     from the same video but contained a duplicate (the old hero.jpg and
+     chase.jpg were near-identical frames) and leaned on distant grey-water
+     frames from the first 30s of the clip, which is the weakest material in it.
+     The new set is curated across the whole 159s: see TODO.md for the frame
+     timecodes. -->
+<header class="cs-hero">
+  <div class="img-slot" style="background-image:url('../assets/sailing/fleet.jpg'); background-position:center 55%;" aria-hidden="true"></div>
+  <div class="scrim" aria-hidden="true"></div>
+  <div class="content stagger in">
+    <div class="kicker">Documentary · Aerial</div>
+    <h1 class="t-hero">Sailing</h1>
+    <p class="lead t-lead">A multihull regatta from the air — rainbow sails, lifted hulls, and a horizon that will not stay level.</p>
+  </div>
+</header>
+
+<section class="cs-meta reveal">
+  <dl class="inner">
+    <div><dt>Role</dt><dd>Drone operator, camera, edit</dd></div>
+    <div><dt>Event</dt><dd>Double Trouble Multihull Regatta</dd></div>
+    <div><dt>Location</dt><dd>Whitianga, New Zealand</dd></div>
+    <div><dt>Year</dt><dd>2025</dd></div>
+  </dl>
+</section>
+
+
+<section class="section reveal">
+  <div class="prose">
+    <h3>The idea</h3>
+    <p>Sailing is almost always filmed from the shore, where it looks slow. Flown alongside instead, a Hobie catamaran at speed is the opposite of slow: the windward hull lifts clear, the wake tears open behind it, and the horizon rolls because the camera is rolling with it.</p>
+    <p>This is two days of the Double Trouble Multihull Regatta at Whitianga. A fleet of Hobies in competition is a gift to a camera — the sails are the brightest objects for miles, the boats are close enough together to give each other scale, and nobody is sailing conservatively.</p>
+
+    <h3>Flying it</h3>
+    <ul>
+      <li>Fly alongside and slightly above, matching the boat's speed, rather than orbiting it — an orbit reads as a drone shot; a chase reads as a point of view.</li>
+      <li>Let the horizon tilt. Levelling every frame in post would remove the only cue that the boat is heeling hard.</li>
+      <li>Shoot into the bay so the land gives the water a scale; open sea alone flattens out.</li>
+      <li>Keep the aircraft upwind of the spray. Salt ends a day faster than a flat battery.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- =====================================================================
+     VIDEO MOMENT (Round 5)
+     Seven seconds of repost.mov, 2:11 -> 2:18 (131s start, 7s duration), as
+     Noah specified. Source: Drive id 1iT0ETDOQQrTWa29DdJ2poVsYl7aFCGSS
+     (116.6 MB, 1920x1080 24fps, 159.6s total).
+     Encoded with ./_vidxcode (AVAssetReader/Writer): 1280x720, 24fps,
+     2600 kbps H.264, video only — 2.3 MB. The AVAssetExportSession path
+     (./_vidtrim 720) also works on this file but produced 5.8 MB for the
+     same seven seconds, so the reader/writer encode is the one shipped.
+     Poster is the clip's own first frame (131.2s).
+     Placed here deliberately: it is the proof of the "chase, do not orbit"
+     and "let the horizon tilt" points in the list directly above.
+     data-loop-video is handled in assets/js/site.js and does NOT autoplay
+     under prefers-reduced-motion — the poster frame stands in instead.
+     ===================================================================== -->
+<!-- =====================================================================
+     SAILING VIDEO STAGE (Round 7) — APPROVED, FINAL
+     Noah reviewed three options (plain, small/inset, full-screen scroll-stage)
+     and picked this one ("push the animation, it's amazing") on 2026-10-09.
+     Sticky stage: clip starts as an inset rounded card and opens to fill the
+     viewport as you scroll past, caption rising over it.
+     Styling: .video-stage in assets/css/site.css.
+     Progress handler: [data-video-stage] in assets/js/site.js.
+     Same video/sail-moment.mp4 + poster as round 5 (repost.mov, 2:11->2:18,
+     1280x720, 24fps, 2600kbps, 2.3MB). data-loop-video does not autoplay
+     under prefers-reduced-motion — the stage collapses to a plain full-width
+     block and the poster frame stands in, same as before.
+     ===================================================================== -->
+<section class="video-stage" data-video-stage aria-label="Seven seconds of the chase">
+  <div class="vs-track">
+    <div class="vs-sticky">
+      <div class="vs-frame">
+        <video data-loop-video muted loop playsinline preload="metadata" width="1280" height="720"
+               poster="../video/sail-moment-poster.jpg"
+               aria-label="Seven-second loop: a drone chases a yellow Hobie catamaran across the bay while a rainbow-sailed boat crosses behind it">
+          <source src="../video/sail-moment.mp4" type="video/mp4">
+        </video>
+        <div class="vs-scrim" aria-hidden="true"></div>
+      </div>
+      <div class="vs-copy">
+        <div class="eyebrow">The chase</div>
+        <p class="t-lead">The horizon never settles, because the camera is flying the same water the boat is sailing.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section reveal">
+  <div class="prose">
+    <h3>Colour does the composition</h3>
+    <p>Green water, grey sky, dark headland: on their own these are a muted, almost monochrome palette. The sails are the only saturated thing in the frame, so most of the framing decisions came down to where the sail sits against that flat background and how much of the water it is allowed to own.</p>
+  </div>
+</section>
+
+<!-- Editorial rows. data-lightbox makes every image here part of one album
+     together with the full grid at the foot of the page. -->
+<div class="gallery cols-3 reveal" data-lightbox="Sailing">
+  <img src="../assets/sailing/orange-hike.jpg" alt="Orange and red sail, crew hiked out hard as the hull lifts" loading="lazy">
+  <img src="../assets/sailing/overhead.jpg" alt="Directly overhead: the sail reads as a flat graphic shape on green water" loading="lazy">
+  <img src="../assets/sailing/rainbow-pair.jpg" alt="Two boats overlapping, rainbow sail in front" loading="lazy">
+</div>
+<div class="gallery cols-2 reveal" data-lightbox="Sailing">
+  <img src="../assets/sailing/headland.jpg" alt="Rainbow sail on a reach with the headland behind for scale" loading="lazy">
+  <img src="../assets/sailing/dark-hull.jpg" alt="A dark-hulled catamaran under a flat sky, close to monochrome" loading="lazy">
+</div>
+
+<section class="section reveal">
+  <div class="prose">
+    <h3>The overheads</h3>
+    <p>The frames shot from directly above a single boat are the closest this project gets to the still work elsewhere in the portfolio. From straight down there is no horizon, no sense of speed and no weather — just a coloured triangle, a white wake and a field of green. They stop being footage and start being composition, which is why they are in here as photographs rather than as a sequence in the cut.</p>
+  </div>
+</section>
+
+<!-- =====================================================================
+     FULL GALLERY (Round 3, item 7)
+     Every usable still from this project. Click any image for the fullscreen
+     viewer — assets/js/lightbox.js. Same data-lightbox value as the rows
+     above, so the viewer pages through the whole project in document order.
+     ===================================================================== -->
+<section class="gallery-full reveal">
+  <div class="gf-head">
+    <div class="eyebrow">Gallery</div>
+    <h2 class="t-display-md">Every frame</h2>
+    <p>Thirteen stills pulled from the regatta footage. Click any image to view it full screen; use the arrow keys to move through the set.</p>
+  </div>
+  <div class="gf-grid" data-lightbox="Sailing">
+    <img src="../assets/sailing/cover.jpg" alt="Rainbow sail filling the frame, shot from close abeam" loading="lazy">
+    <img src="../assets/sailing/yellow-big.jpg" alt="Yellow-sailed Hobie close aboard with the crew on the wire" loading="lazy">
+    <img src="../assets/sailing/orange-hike.jpg" alt="Orange and red sail, crew hiked out hard as the hull lifts" loading="lazy">
+    <img src="../assets/sailing/orange-crew.jpg" alt="Orange sail with both crew visible on the trampoline" loading="lazy">
+    <img src="../assets/sailing/orange-close.jpg" alt="Red and orange sail against flat green water" loading="lazy">
+    <img src="../assets/sailing/overhead.jpg" alt="Directly overhead: the sail as a flat graphic shape on green water" loading="lazy">
+    <img src="../assets/sailing/rainbow-pair.jpg" alt="Two boats overlapping, rainbow sail in front" loading="lazy">
+    <img src="../assets/sailing/rainbow-crew.jpg" alt="Rainbow sail close aboard with the crew working the boat" loading="lazy">
+    <img src="../assets/sailing/headland.jpg" alt="Rainbow sail on a reach with the headland behind for scale" loading="lazy">
+    <img src="../assets/sailing/yellow-headland.jpg" alt="Yellow sail crossing in front of the headland" loading="lazy">
+    <img src="../assets/sailing/fleet.jpg" alt="Several boats of the fleet overlapping mid-race" loading="lazy">
+    <img src="../assets/sailing/establish.jpg" alt="Establishing frame: a single boat, the bay and the coastline" loading="lazy">
+    <img src="../assets/sailing/dark-hull.jpg" alt="A dark-hulled catamaran under a flat sky, close to monochrome" loading="lazy">
+  </div>
+</section>
+
+<!-- =====================================================================
+     FROM THE WATER (Round 5)
+     Noah said there were more sailing photographs — he uploaded 22 of them
+     into the Sailing Drive folder (id 1_R2tp6g_RvBDvwzb-a6Jky1zOqhnOxmu) on
+     2026-10-08, after the Round 3 build had already read that folder and
+     found only repost.mov in it. Filenames are "Capture NNNN[ - Copy].JPG",
+     all 1324x680, stamped 2023-07-18 — an EARLIER event than the 2025 drone
+     footage, shot at surface level rather than from the air, which is why
+     they are a separate section and not folded into "Every frame" below.
+     Nine selected from the twenty-two; the rest were near-duplicates
+     (7468/7479 are literal duplicate pairs) or weaker repeats of these.
+     7299 is the same frame now used as the Sailing tile on the homepage.
+     Same data-lightbox album as the rest of the page.
+     ===================================================================== -->
+<section class="section reveal">
+  <div class="prose">
+    <h3>Before the drone</h3>
+    <p>Two years before the aerial coverage, the same fleet was photographed from the water and the shore with a long lens. It is a completely different way to see the boats: no overheads, no graphic flat shapes, just weather, distance, and crews working hard at the edge of the frame.</p>
+  </div>
+</section>
+
+<div class="gallery cols-3 reveal" data-lightbox="Sailing">
+  <img src="../assets/sailing/reg-mist.jpg" alt="A single yacht almost lost in flat white haze" loading="lazy">
+  <img src="../assets/sailing/reg-headland.jpg" alt="Backlit keelboat crossing in front of the headland, water glittering" loading="lazy">
+  <img src="../assets/sailing/reg-pinnacle.jpg" alt="A crew working the boat with a rock pinnacle standing out of the sea behind" loading="lazy">
+</div>
+<div class="gallery cols-3 reveal" data-lightbox="Sailing">
+  <img src="../assets/sailing/reg-red-kite.jpg" alt="A red spinnaker filled hard against blue sky" loading="lazy">
+  <img src="../assets/sailing/reg-hoist.jpg" alt="Close on the bow as the crew wrestles a spinnaker up" loading="lazy">
+  <img src="../assets/sailing/reg-class56.jpg" alt="Boat 56 close aboard, the whole crew on the rail" loading="lazy">
+</div>
+<div class="gallery cols-3 reveal" data-lightbox="Sailing">
+  <img src="../assets/sailing/reg-rail.jpg" alt="Three crew hiked out over the side as the boat heels" loading="lazy">
+  <img src="../assets/sailing/reg-mark.jpg" alt="Rounding the orange mark, boats overlapped and sails crowding the frame" loading="lazy">
+  <img src="../assets/sailing/reg-pair.jpg" alt="Two boats running down the bay, one under a red kite, headland behind" loading="lazy">
+</div>
+
+<section class="section center band reveal">
+  <h2 class="t-display-md">Want the long version?</h2>
+  <p class="body">Happy to walk through the process, the outtakes, and what I'd do differently.</p>
+  <div class="cta-row" style="display:flex;gap:var(--sp-sm);justify-content:center;flex-wrap:wrap;margin-top:var(--sp-lg)">
+    <a class="btn btn-primary magnetic" href="mailto:persnalfornak@gmail.com">Get in touch</a>
+    <a class="btn btn-ghost magnetic" href="../index.html#work">All projects</a>
+  </div>
+</section>
+
+<nav class="pager reveal" aria-label="More projects">
+  <a href="drifting.html"><div class="dir">&lsaquo; Previous</div><div class="name">Wide Span Sheds</div></a>
+  <a href="lost-spring.html"><div class="dir">Next &rsaquo;</div><div class="name">The Lost Spring</div></a>
+</nav>
+<footer class="site" id="contact">
+  <div class="links">
+    <a href="mailto:persnalfornak@gmail.com">Email</a>
+    <a href="../index.html#work">Work</a>
+    <a href="../index.html#about">About</a>
+  </div>
+  &#9875; <b>Noah Kline</b> &middot; Portfolio &middot; 2026
+</footer>
+
+<script src="../assets/js/site.js"></script>
+<script src="../assets/js/lightbox.js"></script>
+<!-- OPTIONAL: magnetic buttons. Delete this one line to remove the effect. -->
+<script src="../assets/js/magnetic.js"></script>
+</body>
+</html>

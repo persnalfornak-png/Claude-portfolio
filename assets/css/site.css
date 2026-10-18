@@ -1,0 +1,762 @@
+/* ===========================================================================
+   Noah Kline — Portfolio
+   Shared stylesheet. Design language: Apple (see projects/design-references/apple-DESIGN.md).
+   Token names map 1:1 to that document. Never inline a hex — add a token instead.
+   =========================================================================== */
+
+/* ---------- Tokens ---------- */
+:root {
+  /* color */
+  --primary:#0066cc; --primary-focus:#0071e3; --primary-on-dark:#2997ff;
+  --ink:#1d1d1f; --body-on-dark:#ffffff; --body-muted:#cccccc;
+  --ink-muted-80:#333333; --ink-muted-48:#7a7a7a;
+  --divider-soft:#f0f0f0; --hairline:#e0e0e0;
+  --canvas:#ffffff; --canvas-parchment:#f5f5f7; --surface-pearl:#fafafc;
+  --surface-tile-1:#272729; --surface-tile-2:#2a2a2c; --surface-tile-3:#252527;
+  --surface-black:#000000; --surface-chip-translucent:#d2d2d7;
+
+  /* spacing */
+  --sp-xxs:4px; --sp-xs:8px; --sp-sm:12px; --sp-md:17px;
+  --sp-lg:24px; --sp-xl:32px; --sp-xxl:48px; --sp-section:80px;
+
+  /* radius */
+  --r-none:0px; --r-xs:5px; --r-sm:8px; --r-md:11px; --r-lg:18px; --r-pill:9999px;
+
+  /* type stacks */
+  --font-display:'SF Pro Display',system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
+  --font-text:'SF Pro Text',system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
+
+  /* motion */
+  --ease:cubic-bezier(.2,.7,.2,1);
+
+  /* chrome */
+  --nav-h:44px;
+}
+
+/* ---------- Reset ---------- */
+* { box-sizing:border-box; margin:0; padding:0; }
+html { scroll-behavior:smooth; -webkit-text-size-adjust:100%; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior:auto; } }
+body {
+  font-family:var(--font-text); font-size:17px; font-weight:400; line-height:1.47;
+  letter-spacing:-0.374px; background:var(--canvas); color:var(--ink);
+  -webkit-font-smoothing:antialiased;
+}
+img, video { display:block; max-width:100%; }
+a { color:var(--primary); }
+:focus-visible { outline:2px solid var(--primary-focus); outline-offset:3px; }
+
+/* ---------- Type utilities ---------- */
+.t-hero    { font-family:var(--font-display); font-weight:600; font-size:clamp(34px,7.5vw,56px); line-height:1.07; letter-spacing:-0.28px; }
+.t-display { font-family:var(--font-display); font-weight:600; font-size:clamp(30px,4.4vw,40px); line-height:1.1;  letter-spacing:0; }
+.t-display-md { font-family:var(--font-text); font-weight:600; font-size:clamp(24px,3.4vw,34px); line-height:1.2; letter-spacing:-0.374px; }
+.t-lead    { font-family:var(--font-display); font-weight:400; font-size:clamp(20px,2.6vw,28px); line-height:1.14; letter-spacing:0.196px; }
+.t-lead-airy { font-family:var(--font-text); font-weight:300; font-size:clamp(19px,2.2vw,24px); line-height:1.5; letter-spacing:0; }
+.t-tagline { font-family:var(--font-display); font-weight:600; font-size:21px; line-height:1.19; letter-spacing:0.231px; }
+.t-body    { font-size:17px; font-weight:400; line-height:1.47; letter-spacing:-0.374px; }
+.t-caption { font-size:14px; font-weight:400; line-height:1.43; letter-spacing:-0.224px; }
+.t-fine    { font-size:12px; font-weight:400; line-height:1.3; letter-spacing:-0.12px; }
+.muted     { color:var(--ink-muted-80); }
+.on-dark .muted, .tile.dark .muted { color:var(--body-muted); }
+
+/* ---------- Motion primitives (reduced-motion safe) ---------- */
+/* Animations only exist inside this guard; with reduce, everything is already final-state. */
+@media (prefers-reduced-motion: no-preference) {
+  .reveal { opacity:0; transform:translateY(28px); transition:opacity .9s var(--ease), transform .9s var(--ease); }
+  .reveal.in { opacity:1; transform:translateY(0); }
+
+  .stagger > * { opacity:0; transform:translateY(22px); transition:opacity .8s var(--ease), transform .8s var(--ease); }
+  .stagger.in > * { opacity:1; transform:translateY(0); }
+  .stagger.in > *:nth-child(1){transition-delay:.05s}
+  .stagger.in > *:nth-child(2){transition-delay:.18s}
+  .stagger.in > *:nth-child(3){transition-delay:.31s}
+  .stagger.in > *:nth-child(4){transition-delay:.44s}
+
+  /* Ken Burns: image eases out of an over-scale as its tile enters view */
+  .tile .img-slot { transform:scale(1.15); transition:transform 1.6s var(--ease); }
+  .tile.in .img-slot { transform:scale(1.0); }
+  .tile:hover .img-slot { transform:scale(1.04); }
+}
+
+/* ---------- Film grain overlay (Phase 3) -----------------------------------
+   One fixed, pointer-transparent layer over the whole document.
+   Static SVG fractal-noise data URI: rasterised once by the compositor, no
+   per-frame JS, no repaint cost. Remove by deleting .grain from the markup.
+   -------------------------------------------------------------------------- */
+/* inset:0 — an oversized fixed layer (e.g. inset:-50%) widens the scrollable
+   area in Chrome and breaks narrow viewports, so the drift is done with
+   background-position instead of a transform. */
+.grain {
+  position:fixed; inset:0; z-index:9000; pointer-events:none;
+  opacity:.035; mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:160px 160px;
+  background-repeat:repeat;
+}
+/* Faint drift so it does not read as a dead texture. Six discrete steps over
+   8s — the texture tile is 160px, so shifts stay inside one tile and never
+   affect layout. */
+@media (prefers-reduced-motion: no-preference) {
+  .grain { animation:grain-drift 8s steps(1,end) infinite; }
+  @keyframes grain-drift {
+    0%   { background-position:0 0; }
+    16%  { background-position:-37px 19px; }
+    33%  { background-position:21px -43px; }
+    50%  { background-position:-19px 31px; }
+    66%  { background-position:44px 13px; }
+    83%  { background-position:-28px -22px; }
+    100% { background-position:0 0; }
+  }
+}
+@media (prefers-reduced-motion: reduce) { .grain { opacity:.025; } }
+
+/* ---------- Global nav ---------- */
+nav.global {
+  position:fixed; top:0; left:0; right:0; height:var(--nav-h);
+  background:rgba(0,0,0,0.82); backdrop-filter:saturate(180%) blur(20px);
+  -webkit-backdrop-filter:saturate(180%) blur(20px);
+  display:flex; align-items:center; justify-content:center; gap:36px;
+  z-index:8000; font-family:var(--font-text); font-size:12px; letter-spacing:-0.12px;
+  color:rgba(255,255,255,0.8); padding:0 var(--sp-lg);
+}
+nav.global a { color:inherit; text-decoration:none; }
+nav.global a:hover { color:#fff; }
+nav.global .brand { font-weight:600; color:#fff; }
+nav.global .nav-links { display:flex; gap:36px; }
+
+/* ---------- Buttons ---------- */
+.btn {
+  display:inline-flex; align-items:center; justify-content:center;
+  font-family:var(--font-text); font-size:17px; font-weight:400; letter-spacing:-0.374px;
+  text-decoration:none; border:0; cursor:pointer;
+  border-radius:var(--r-pill); padding:11px 22px; min-height:44px;
+  transition:transform .18s var(--ease), background-color .2s var(--ease);
+}
+.btn:active { transform:scale(0.95); }
+.btn-primary { background:var(--primary); color:#fff; }
+.btn-ghost { background:transparent; color:var(--primary); box-shadow:inset 0 0 0 1px var(--primary); }
+.btn-ghost-on-dark { background:transparent; color:var(--primary-on-dark); box-shadow:inset 0 0 0 1px var(--primary-on-dark); }
+.link { color:var(--primary); text-decoration:none; font-size:17px; letter-spacing:-0.374px; }
+.link:hover { text-decoration:underline; }
+.on-dark .link, .tile.dark .link { color:var(--primary-on-dark); }
+
+/* ---------- Hero (homepage, text variant) ---------- */
+.hero {
+  min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  text-align:center; padding:calc(var(--nav-h) + 116px) var(--sp-lg) 100px;
+  background:var(--canvas-parchment);
+}
+.hero .lead { max-width:600px; margin:var(--sp-md) auto var(--sp-lg); }
+
+/* ---------- Video hero (Phase 2) ------------------------------------------
+   Full-bleed muted looping autoplay with a poster fallback. The <video> is
+   removed from the flow entirely under prefers-reduced-motion (see JS); the
+   poster image is always painted underneath so there is never a blank frame.
+   -------------------------------------------------------------------------- */
+.hero-video {
+  position:relative; min-height:100vh; min-height:100svh; overflow:hidden;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  text-align:center; padding:calc(var(--nav-h) + 96px) var(--sp-lg) var(--sp-section);
+  background:var(--surface-black); color:var(--body-on-dark);
+}
+.hero-video .media, .hero-video video, .hero-video .poster {
+  position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
+}
+.hero-video .poster { background-size:cover; background-position:center; }
+.hero-video video { opacity:0; transition:opacity 1.2s var(--ease); }
+.hero-video video.ready { opacity:1; }
+/* Scrim: keeps the headline legible over any frame without reading as decoration. */
+.hero-video .scrim {
+  position:absolute; inset:0;
+  background:linear-gradient(180deg, rgba(0,0,0,.42) 0%, rgba(0,0,0,.18) 42%, rgba(0,0,0,.62) 100%);
+}
+.hero-video .content { position:relative; z-index:2; max-width:760px; }
+.hero-video .content .lead { color:rgba(255,255,255,.86); margin:var(--sp-md) auto var(--sp-xl); max-width:620px; }
+.hero-video .cta-row { display:flex; gap:var(--sp-sm); justify-content:center; flex-wrap:wrap; }
+.hero-video .scroll-hint {
+  position:absolute; bottom:var(--sp-xl); left:50%; transform:translateX(-50%);
+  z-index:2; font-size:12px; letter-spacing:-0.12px; color:rgba(255,255,255,.56);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .hero-video .scroll-hint { animation:hint 2.4s var(--ease) infinite; }
+  @keyframes hint { 0%,100%{transform:translateX(-50%) translateY(0);opacity:.56} 50%{transform:translateX(-50%) translateY(6px);opacity:.9} }
+}
+
+/* ---------- Work tiles ---------- */
+/* ROUND 3 (item 2): the video hero butted straight into the first tile, so the
+   two full-bleed blocks fused into one slab with no pause between them. A band
+   of canvas above the grid gives the hero somewhere to end. Scales down with
+   the viewport so phones do not get a dead screenful of white. */
+.hero-video + .tile-row { margin-top:var(--sp-section); }
+/* ...and the tiles need the same pause before the numbers strip below them. */
+.tile-row + .numbers { margin-top:var(--sp-section); }
+/* Work tiles sit in a 2-up grid so four projects form a clean square block,
+   matching Apple's paired-tile rhythm rather than orphaning the fourth. */
+.tile-row { display:grid; grid-template-columns:repeat(2,1fr); }
+/* With an odd number of projects the last tile would otherwise sit alone in the
+   left column with dead white space beside it. Let it span the full width. */
+.tile-row > :last-child:nth-child(odd) { grid-column:1 / -1; }
+.tile {
+  min-height:520px; position:relative; display:flex; flex-direction:column;
+  align-items:center; justify-content:flex-end; padding:60px 40px; overflow:hidden; text-align:center;
+  text-decoration:none; color:inherit;
+}
+.tile.dark { background:var(--surface-tile-1); color:var(--body-on-dark); }
+.tile.dark-2 { background:var(--surface-tile-2); color:var(--body-on-dark); }
+.tile.light { background:var(--canvas); color:var(--ink); }
+.tile .img-slot { position:absolute; inset:0; background-size:cover; background-position:center; opacity:.9; }
+.tile .content { position:relative; z-index:2; }
+.tile.dark .content, .tile.dark-2 .content { text-shadow:0 2px 20px rgba(0,0,0,0.5); }
+.tile h2 { font-family:var(--font-display); font-weight:600; font-size:34px; letter-spacing:-0.374px; margin-bottom:var(--sp-xs); }
+.tile p { font-size:17px; opacity:.85; margin-bottom:var(--sp-md); }
+
+/* ---------- Generic section ---------- */
+.section { padding:var(--sp-section) 40px; max-width:980px; margin:0 auto; }
+.section.center { text-align:center; }
+.section .eyebrow {
+  font-size:14px; font-weight:600; color:var(--primary);
+  letter-spacing:-0.224px; margin-bottom:var(--sp-sm); text-transform:uppercase;
+}
+.section h2 { margin-bottom:var(--sp-lg); }
+.section p.body { max-width:640px; margin:0 auto var(--sp-md); color:var(--ink-muted-80); line-height:1.5; }
+.section.left p.body { margin-left:0; }
+.band { background:var(--canvas-parchment); }
+.band-dark { background:var(--surface-tile-1); color:var(--body-on-dark); }
+.band-dark p.body, .band-dark .muted { color:var(--body-muted); }
+
+/* ---------- Case study: header ---------- */
+.cs-hero {
+  position:relative; min-height:76vh; display:flex; align-items:flex-end;
+  padding:calc(var(--nav-h) + var(--sp-section)) 40px var(--sp-section);
+  background:var(--surface-tile-1); color:var(--body-on-dark); overflow:hidden;
+}
+.cs-hero .img-slot { position:absolute; inset:0; background-size:cover; background-position:center; opacity:.88; }
+.cs-hero .scrim { position:absolute; inset:0; background:linear-gradient(180deg,rgba(0,0,0,.35),rgba(0,0,0,.72)); }
+.cs-hero .content { position:relative; z-index:2; max-width:980px; margin:0 auto; width:100%; }
+.cs-hero .kicker { font-size:14px; font-weight:600; letter-spacing:-0.224px; color:var(--primary-on-dark); text-transform:uppercase; margin-bottom:var(--sp-sm); }
+.cs-hero .lead { color:rgba(255,255,255,.86); margin-top:var(--sp-md); max-width:620px; }
+
+/* ---------- Case study: meta strip ---------- */
+.cs-meta { background:var(--canvas-parchment); padding:var(--sp-xxl) 40px; }
+.cs-meta .inner { max-width:980px; margin:0 auto; display:grid; grid-template-columns:repeat(4,1fr); gap:var(--sp-lg); }
+.cs-meta dt { font-size:14px; font-weight:600; letter-spacing:-0.224px; color:var(--ink-muted-48); margin-bottom:var(--sp-xxs); }
+.cs-meta dd { font-size:17px; letter-spacing:-0.374px; }
+
+/* ---------- Case study: prose ---------- */
+.prose { max-width:680px; margin:0 auto; }
+.prose h3 { font-family:var(--font-text); font-weight:600; font-size:24px; letter-spacing:-0.374px; margin:var(--sp-xxl) 0 var(--sp-sm); }
+.prose h3:first-child { margin-top:0; }
+.prose p { margin-bottom:var(--sp-md); color:var(--ink-muted-80); line-height:1.5; }
+.prose ul { margin:0 0 var(--sp-md) var(--sp-lg); color:var(--ink-muted-80); }
+.prose li { margin-bottom:var(--sp-xs); line-height:1.5; }
+.prose blockquote {
+  margin:var(--sp-xl) 0; padding-left:var(--sp-lg);
+  border-left:2px solid var(--hairline);
+  font-family:var(--font-display); font-weight:400; font-size:24px; line-height:1.3; letter-spacing:0; color:var(--ink);
+}
+
+/* ---------- Galleries ---------- */
+.figure-full { margin:0; }
+.figure-full img { width:100%; height:auto; }
+/* ROUND 5: a full-bleed <video> moment uses the same band as a full-bleed
+   photograph (Sailing case study). Matching the img rule keeps the figcaption
+   on the same baseline whichever media type the figure holds. */
+.figure-full video { width:100%; height:auto; }
+
+/* A tall artwork (a print, a scanned sheet) shown as an object resting on a
+   surface rather than as a full-bleed band — full-bleed would run several
+   screens deep on desktop. Carries the one sanctioned product shadow. */
+.figure-portrait { margin:0; padding:var(--sp-section) 40px; background:var(--canvas-parchment); }
+.figure-portrait img {
+  display:block; margin:0 auto; width:auto; max-width:min(520px,100%); max-height:82vh; height:auto;
+  box-shadow:rgba(0,0,0,0.22) 3px 5px 30px 0;
+}
+.figure-portrait figcaption { max-width:520px; margin:var(--sp-md) auto 0; padding:0; text-align:center; }
+.figure-full figcaption, .gallery figcaption {
+  font-size:14px; letter-spacing:-0.224px; color:var(--ink-muted-48);
+  padding:var(--sp-sm) 40px 0; max-width:980px; margin:0 auto;
+}
+.gallery { display:grid; gap:2px; }
+.gallery.cols-2 { grid-template-columns:repeat(2,1fr); }
+.gallery.cols-3 { grid-template-columns:repeat(3,1fr); }
+.gallery img { width:100%; height:auto; object-fit:cover; aspect-ratio:3/2; }
+.gallery.tall img { aspect-ratio:3/4; }   /* portrait-format work: crop less aggressively */
+.gallery .portrait img { aspect-ratio:2/3; }
+/* The one sanctioned shadow in the system: imagery resting on a surface. */
+.rests { box-shadow:rgba(0,0,0,0.22) 3px 5px 30px 0; }
+
+/* ---------- Next-project pager ---------- */
+.pager { display:flex; flex-wrap:wrap; border-top:1px solid var(--hairline); }
+.pager a {
+  flex:1 1 50%; padding:var(--sp-xxl) 40px; text-decoration:none; color:var(--ink);
+  background:var(--canvas); transition:background-color .25s var(--ease);
+}
+.pager a:hover { background:var(--canvas-parchment); }
+.pager .dir { font-size:14px; letter-spacing:-0.224px; color:var(--ink-muted-48); margin-bottom:var(--sp-xxs); }
+.pager .name { font-family:var(--font-display); font-weight:600; font-size:28px; letter-spacing:-0.28px; }
+.pager a:last-child { text-align:right; }
+
+/* ---------- Numbers strip (Phase 7) ---------- */
+.numbers { background:var(--canvas-parchment); padding:var(--sp-section) 40px; }
+/* ROUND 3 (item 5): this was repeat(4,1fr) while the strip only holds THREE
+   stats, so the row rendered flush-left with a dead fourth column and read as
+   mis-centred. auto-fit sizes the track count to the real number of children,
+   so the block stays optically centred whether there are 3 or 4. */
+.numbers .inner { max-width:980px; margin:0 auto; display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:var(--sp-xl); text-align:center; justify-content:center; }
+.numbers .n { font-family:var(--font-display); font-weight:600; font-size:clamp(40px,6vw,56px); line-height:1.07; letter-spacing:-0.28px; font-variant-numeric:tabular-nums; }
+.numbers .l { font-size:14px; letter-spacing:-0.224px; color:var(--ink-muted-48); margin-top:var(--sp-xs); }
+
+/* ---------- Footer ---------- */
+footer.site {
+  background:var(--surface-black); color:rgba(255,255,255,0.56);
+  text-align:center; padding:var(--sp-xxl) var(--sp-lg); font-size:12px; letter-spacing:-0.12px;
+}
+footer.site b { color:#fff; }
+footer.site a { color:var(--primary-on-dark); text-decoration:none; }
+footer.site .links { display:flex; gap:var(--sp-lg); justify-content:center; flex-wrap:wrap; margin-bottom:var(--sp-md); }
+
+/* ===========================================================================
+   Responsive (Phase 6). Breakpoints per apple-DESIGN.md:
+   1068 small-desktop · 833 tablet-landscape · 734 tablet-portrait · 640 phone · 480 small-phone
+   =========================================================================== */
+@media (max-width:1068px) {
+  .section { padding:var(--sp-section) var(--sp-xl); }
+  .cs-hero, .cs-meta, .pager a, .numbers { padding-left:var(--sp-xl); padding-right:var(--sp-xl); }
+  .figure-full figcaption, .gallery figcaption { padding-left:var(--sp-xl); padding-right:var(--sp-xl); }
+}
+@media (max-width:833px) {
+  .tile-row { grid-template-columns:1fr; }
+  .tile { min-height:460px; padding:var(--sp-xxl) var(--sp-lg); }
+  .cs-meta .inner { grid-template-columns:repeat(2,1fr); }
+  .numbers .inner { grid-template-columns:repeat(2,1fr); gap:var(--sp-xxl) var(--sp-lg); }
+  .gallery.cols-3 { grid-template-columns:repeat(2,1fr); }
+  .pager a { flex:1 1 100%; text-align:left; }
+  .pager a:last-child { text-align:left; border-top:1px solid var(--hairline); }
+  /* Nav collapses: brand stays, links become a single scrollable row */
+  nav.global { justify-content:space-between; gap:var(--sp-md); }
+  nav.global .nav-links { gap:var(--sp-lg); }
+}
+@media (max-width:734px) {
+  .figure-portrait { padding:var(--sp-xxl) var(--sp-lg); }
+  .section { padding:var(--sp-xxl) var(--sp-lg); }
+  .cs-hero { min-height:64vh; padding:calc(var(--nav-h) + var(--sp-xxl)) var(--sp-lg) var(--sp-xxl); }
+  .cs-meta { padding:var(--sp-xl) var(--sp-lg); }
+  .numbers { padding:var(--sp-xxl) var(--sp-lg); }
+  .pager a { padding:var(--sp-xl) var(--sp-lg); }
+  .figure-full figcaption, .gallery figcaption { padding-left:var(--sp-lg); padding-right:var(--sp-lg); }
+  .hero { padding:calc(var(--nav-h) + var(--sp-xxl)) var(--sp-lg) var(--sp-xxl); }
+  .hero-video { padding:calc(var(--nav-h) + var(--sp-xxl)) var(--sp-lg) var(--sp-xxl); }
+  .prose blockquote { font-size:21px; }
+}
+@media (max-width:640px) {
+  .gallery.cols-2, .gallery.cols-3 { grid-template-columns:1fr; }
+  .gallery { gap:var(--sp-xxs); }
+  .tile h2 { font-size:28px; }
+  nav.global { font-size:11px; }
+  nav.global .nav-links { gap:var(--sp-md); }
+  .cs-meta .inner { grid-template-columns:1fr; gap:var(--sp-md); }
+  .cs-meta dd { font-size:16px; }
+  .hero-video .cta-row .btn { width:100%; }
+}
+@media (max-width:480px) {
+  .numbers .inner { grid-template-columns:1fr; }
+  .section { padding:var(--sp-xl) var(--sp-md); }
+  .tile { min-height:420px; padding:var(--sp-xl) var(--sp-md); }
+}
+
+/* Touch devices: hover-scale has no meaning, and the magnetic effect is disabled in JS. */
+@media (hover:none) {
+  .tile:hover .img-slot { transform:scale(1.0); }
+}
+
+
+/* ===========================================================================
+   LIGHTBOX (Round 3, item 7)
+   Fullscreen image viewer used by every case study. Behaviour lives in
+   assets/js/lightbox.js; this is presentation only.
+
+   Everything animated sits behind prefers-reduced-motion: no-preference, so
+   with reduce the viewer simply appears and disappears at its final state.
+   =========================================================================== */
+
+/* Gallery images that are wired to the viewer. The cursor and the hover lift
+   are the only affordance — no overlay icon, which would fight the imagery. */
+.lb-trigger { cursor:zoom-in; }
+@media (prefers-reduced-motion: no-preference) {
+  .lb-trigger { transition:opacity .3s var(--ease), transform .5s var(--ease); }
+  .lb-trigger:hover { opacity:.92; }
+}
+.lb-trigger:focus-visible { outline:2px solid var(--primary-focus); outline-offset:-2px; }
+
+/* Lock the page behind the viewer without the layout shifting as the
+   scrollbar disappears. */
+html.lb-lock { overflow:hidden; }
+@supports (scrollbar-gutter: stable) { html.lb-lock { scrollbar-gutter:stable; } }
+
+.lb {
+  position:fixed; inset:0; z-index:9500;
+  display:grid; grid-template-rows:auto 1fr;
+  opacity:0;
+}
+.lb[hidden] { display:none; }
+.lb-backdrop { position:absolute; inset:0; background:rgba(0,0,0,.94); backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px); }
+.lb.lb-open { opacity:1; }
+@media (prefers-reduced-motion: no-preference) {
+  .lb { transition:opacity .24s var(--ease); }
+}
+@media (prefers-reduced-motion: reduce) { .lb { transition:none; } }
+
+/* ---- top bar: album name, counter, close ---- */
+.lb-bar {
+  position:relative; z-index:2;
+  display:flex; align-items:center; justify-content:space-between; gap:var(--sp-md);
+  padding:var(--sp-md) var(--sp-lg);
+  color:rgba(255,255,255,.72);
+  font-family:var(--font-text); font-size:12px; letter-spacing:-0.12px;
+}
+.lb-meta { display:flex; align-items:baseline; gap:var(--sp-sm); min-width:0; }
+.lb-album { font-weight:600; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.lb-count { font-variant-numeric:tabular-nums; white-space:nowrap; }
+
+/* ---- buttons ---- */
+.lb-btn {
+  appearance:none; border:0; background:rgba(255,255,255,.1); color:#fff;
+  width:44px; height:44px; border-radius:var(--r-pill);
+  display:inline-flex; align-items:center; justify-content:center;
+  cursor:pointer; padding:0;
+}
+.lb-btn svg { width:22px; height:22px; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
+.lb-btn:hover { background:rgba(255,255,255,.2); }
+.lb-btn:focus-visible { outline:2px solid var(--primary-on-dark); outline-offset:3px; }
+@media (prefers-reduced-motion: no-preference) {
+  .lb-btn { transition:background-color .2s var(--ease), transform .18s var(--ease); }
+  .lb-btn:active { transform:scale(.92); }
+}
+
+/* Prev / next sit vertically centred against the viewport edges. */
+.lb-nav { position:absolute; top:50%; transform:translateY(-50%); z-index:3; }
+.lb-prev { left:var(--sp-lg); }
+.lb-next { right:var(--sp-lg); }
+.lb-nav[hidden] { display:none; }
+@media (prefers-reduced-motion: no-preference) {
+  .lb-nav:active { transform:translateY(-50%) scale(.92); }
+}
+
+/* ---- stage ---- */
+.lb-stage {
+  position:relative; z-index:2; margin:0; min-height:0;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:var(--sp-md); padding:0 76px var(--sp-lg);
+}
+.lb-img {
+  max-width:100%; max-height:100%; width:auto; height:auto;
+  object-fit:contain; border-radius:var(--r-xs);
+  opacity:0;
+}
+.lb.lb-loaded .lb-img { opacity:1; }
+@media (prefers-reduced-motion: no-preference) {
+  .lb-img { transform:scale(.985); transition:opacity .32s var(--ease), transform .32s var(--ease); }
+  .lb.lb-loaded .lb-img { transform:scale(1); }
+}
+
+.lb-cap {
+  flex:0 0 auto; max-width:760px; text-align:center;
+  color:rgba(255,255,255,.72);
+  font-size:14px; line-height:1.43; letter-spacing:-0.224px;
+}
+.lb-cap[hidden] { display:none; }
+
+/* Loading pip — only visible while the full-size file is in flight. */
+.lb-spinner { position:absolute; width:22px; height:22px; border-radius:50%; border:2px solid rgba(255,255,255,.25); border-top-color:rgba(255,255,255,.85); opacity:0; }
+.lb.lb-loading .lb-spinner { opacity:1; }
+@media (prefers-reduced-motion: no-preference) {
+  .lb-spinner { animation:lb-spin .8s linear infinite; }
+  @keyframes lb-spin { to { transform:rotate(360deg); } }
+}
+@media (prefers-reduced-motion: reduce) { .lb.lb-loading .lb-spinner { opacity:.5; } }
+
+/* ---- viewer responsive ---- */
+@media (max-width:833px) {
+  .lb-stage { padding:0 var(--sp-md) var(--sp-md); }
+  /* On touch the arrows drop to the bottom corners so they never cover the
+     photo; swipe is the primary gesture anyway. */
+  .lb-nav { top:auto; bottom:var(--sp-md); transform:none; }
+  .lb-prev { left:var(--sp-md); }
+  .lb-next { right:var(--sp-md); }
+  .lb-cap { padding:0 56px; font-size:13px; }
+}
+@media (max-width:480px) {
+  .lb-bar { padding:var(--sp-sm) var(--sp-md); }
+  .lb-album { max-width:46vw; }
+}
+
+/* ===========================================================================
+   FULL PROJECT GALLERY (Round 3, item 7)
+   The "every photo" grid at the foot of each case study. Denser than the
+   editorial .gallery rows above it — this is an index, not a layout.
+   =========================================================================== */
+.gallery-full { padding:0 40px var(--sp-section); max-width:1280px; margin:0 auto; }
+.gallery-full .gf-head { max-width:980px; margin:0 auto var(--sp-lg); }
+.gallery-full .gf-head .eyebrow { font-size:14px; font-weight:600; color:var(--primary); letter-spacing:-0.224px; margin-bottom:var(--sp-xs); text-transform:uppercase; }
+.gallery-full .gf-head p { color:var(--ink-muted-48); font-size:14px; letter-spacing:-0.224px; margin-top:var(--sp-xs); }
+.gf-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:var(--sp-xs); }
+.gf-grid img { width:100%; height:100%; object-fit:cover; aspect-ratio:1/1; background:var(--canvas-parchment); }
+/* Portrait-format source material (the Layering scans) reads badly square-cropped. */
+.gf-grid.portrait img { aspect-ratio:3/4; }
+@media (max-width:1068px) { .gallery-full { padding-left:var(--sp-xl); padding-right:var(--sp-xl); } .gf-grid { grid-template-columns:repeat(3,1fr); } }
+@media (max-width:734px)  { .gallery-full { padding-left:var(--sp-lg); padding-right:var(--sp-lg); padding-bottom:var(--sp-xxl); } }
+@media (max-width:640px)  { .gf-grid { grid-template-columns:repeat(2,1fr); gap:var(--sp-xxs); } }
+
+/* ===========================================================================
+   ROUND 3 (item 2) — responsive scaling for the new hero/tile breathing room.
+   Declared last so it wins over the base rule without needing !important.
+   =========================================================================== */
+@media (max-width:833px) {
+  .hero-video + .tile-row, .tile-row + .numbers { margin-top:var(--sp-xxl); }
+}
+@media (max-width:480px) {
+  .hero-video + .tile-row, .tile-row + .numbers { margin-top:var(--sp-xl); }
+}
+
+
+/* ===========================================================================
+   INLINE GALLERY VIDEO (Round 3, item 8)
+   A short muted clip occupying a normal gallery cell. Matched to the image
+   rules exactly so a row of two photos and one clip stays on one baseline.
+   =========================================================================== */
+.gallery video, .gf-grid video {
+  width:100%; height:auto; display:block;
+  object-fit:cover; aspect-ratio:3/2;
+  background:var(--surface-black);
+}
+.gf-grid video { aspect-ratio:1/1; height:100%; }
+/* A clip is not clickable-to-zoom (the lightbox is a still-image viewer), so
+   it must not advertise the zoom cursor its neighbours have. */
+.gallery video, .gf-grid video { cursor:default; }
+
+
+/* ===========================================================================
+   FEATURED AWARD SECTION (Round 4, item 2)
+   The National Youth Art Awards finalist photograph with its artist statement,
+   sitting between the video hero and the work tiles.
+   WHY WHITE AND NOT A DARK BAND: the hero above it and the tiles below it are
+   both dark full-bleed blocks. A third dark band here would fuse all three
+   into one slab — the same mistake Round 3 fixed above the tile row. White
+   canvas also lets the B&W print read as a print rather than as screen art.
+   The photo carries .rests, the one sanctioned shadow in the system.
+   No animation of its own: it inherits .reveal, which is already inside the
+   prefers-reduced-motion guard, so with reduce it simply renders final-state.
+   =========================================================================== */
+.award { background:var(--canvas); padding:var(--sp-section) 40px; }
+.award .inner {
+  max-width:1080px; margin:0 auto;
+  display:grid; grid-template-columns:minmax(0,0.9fr) minmax(0,1.1fr);
+  gap:clamp(32px,5vw,72px); align-items:center;
+}
+.award-figure { margin:0; }
+.award-figure img {
+  display:block; width:100%; height:auto;
+  max-height:78vh; width:auto; max-width:100%; margin:0 auto;
+}
+.award-figure figcaption {
+  font-size:14px; letter-spacing:-0.224px; color:var(--ink-muted-48);
+  margin-top:var(--sp-md); text-align:center;
+}
+/* The label is a fact, not a decoration: keep it quiet and let the work lead. */
+.award-copy .award-label {
+  font-size:14px; font-weight:600; color:var(--primary);
+  letter-spacing:-0.224px; text-transform:uppercase; margin-bottom:var(--sp-sm);
+}
+.award-copy h2 { margin-bottom:var(--sp-lg); }
+/* Pull-quote treatment: display face, regular weight, generous line height —
+   the statement is the second subject of the section, not body copy. */
+.award-statement {
+  font-family:var(--font-display); font-weight:400;
+  font-size:clamp(20px,2.1vw,26px); line-height:1.4; letter-spacing:0;
+  color:var(--ink); margin:0; padding-left:var(--sp-lg);
+  border-left:2px solid var(--hairline);
+}
+.award-credit {
+  font-size:14px; letter-spacing:-0.224px; color:var(--ink-muted-48);
+  margin-top:var(--sp-lg); padding-left:calc(var(--sp-lg) + 2px);
+}
+/* Breathing room before the tiles: inserting this section between the hero and
+   the tile row broke the `.hero-video + .tile-row` adjacency rule, so restate it. */
+.award + .tile-row { margin-top:var(--sp-section); }
+
+@media (max-width:980px) {
+  .award .inner { grid-template-columns:1fr; gap:var(--sp-xl); }
+  .award-figure img { max-height:62vh; }
+  .award-statement { font-size:20px; }
+}
+@media (max-width:833px) {
+  .award { padding:var(--sp-xxl) var(--sp-xl); }
+  .award + .tile-row { margin-top:var(--sp-xxl); }
+}
+@media (max-width:480px) {
+  .award { padding:var(--sp-xl) var(--sp-lg); }
+  .award + .tile-row { margin-top:var(--sp-xl); }
+  .award-statement { padding-left:var(--sp-md); }
+  .award-credit { padding-left:calc(var(--sp-md) + 2px); }
+}
+
+/* ===========================================================================
+   PLAYABLE FILM BLOCKS (Round 6)
+   Lost Spring and Wide Span Sheds are film jobs, and until round 6 both case
+   studies showed them as frame-grab stills because there was very little
+   stills photography on either shoot. Round 6 replaces the bulk of those
+   stills with the delivered films themselves.
+
+   These are NOT the muted .gallery/.gf-grid loop clips above. A 55-100 second
+   graded film with a soundtrack has to be click-to-play, so every element here
+   carries `controls preload="metadata"` and a poster. That also makes the
+   whole block reduced-motion safe by construction: nothing moves until the
+   visitor presses play, so there is no prefers-reduced-motion branch to write.
+   =========================================================================== */
+.video-row { display:grid; gap:2px; }
+.video-row.cols-2 { grid-template-columns:repeat(2,1fr); }
+.video-row.cols-3 { grid-template-columns:repeat(3,1fr); }
+.video-row figure { margin:0; }
+.video-row video {
+  width:100%; height:auto; display:block;
+  aspect-ratio:16/9; object-fit:cover;
+  background:var(--surface-black);
+}
+.video-row figcaption {
+  color:var(--ink-muted-48); font-size:13px; letter-spacing:-0.208px;
+  padding:var(--sp-xs) 40px 0;
+}
+
+/* The film index that replaces an "Every frame" still grid. Three up, 16:9,
+   captioned — an index of deliverables rather than a mosaic of crops. */
+.video-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:var(--sp-xs); }
+.video-grid figure { margin:0; }
+.video-grid video {
+  width:100%; height:auto; display:block;
+  aspect-ratio:16/9; background:var(--surface-black);
+}
+.video-grid figcaption {
+  color:var(--ink-muted-48); font-size:13px; letter-spacing:-0.208px;
+  margin-top:var(--sp-xxs);
+}
+.video-grid .vg-name { color:var(--ink); font-weight:600; display:block; }
+/* Round 6: one cell holds a 9:16 social re-frame. It keeps the same 16:9 box
+   as its neighbours so the grid stays on its rhythm, and pillarboxes against
+   the same black the posters sit on — the shape of the deliverable is the
+   point, so it is shown rather than cropped away. */
+.video-grid .vg-vert video { object-fit:contain; }
+
+@media (max-width:1068px) {
+  .video-grid { grid-template-columns:repeat(2,1fr); }
+  .video-row figcaption { padding-left:var(--sp-xl); padding-right:var(--sp-xl); }
+}
+@media (max-width:734px) {
+  .video-row.cols-2, .video-row.cols-3 { grid-template-columns:1fr; }
+  .video-row { gap:var(--sp-xxs); }
+  .video-row figcaption { padding-left:var(--sp-lg); padding-right:var(--sp-lg); }
+}
+@media (max-width:640px) {
+  .video-grid { grid-template-columns:1fr; }
+}
+
+
+/* ===========================================================================
+   ROUND 7 — EXPERIMENT, NOT APPROVED. Cinematic scroll video stage.
+   Used only by work/sailing.html. Noah asked to see the Sailing clip either
+   "smaller and cleaner" or full-screen with scroll animation; this is the
+   full-screen option, built so he can look at it. To remove the whole thing,
+   delete this block, the [data-video-stage] handler in assets/js/site.js and
+   the <section class="video-stage"> in work/sailing.html (the original
+   figure-full markup is preserved verbatim in a comment directly above it).
+
+   How it works: --r7p is a 0..1 scroll progress written by site.js on one
+   rAF-throttled listener. The clip starts inset with the large corner radius
+   and grows edge to edge, the scrim deepens and the caption rises. The CSS
+   default is 1, so a visitor with JS blocked just gets the finished frame
+   rather than a permanently shrunken one.
+   =========================================================================== */
+.video-stage { --r7p:1; position:relative; background:var(--surface-black); }
+.video-stage .vs-track { height:280vh; }
+.video-stage .vs-sticky {
+  position:sticky; top:0; height:100vh; height:100svh;
+  display:flex; align-items:center; justify-content:center; overflow:hidden;
+}
+.video-stage .vs-frame {
+  position:relative; width:100%; height:100%; overflow:hidden;
+  background:var(--surface-black);
+  border-radius:calc(var(--r-lg) * (1 - var(--r7p)));
+  transform:scale(calc(0.66 + 0.34 * var(--r7p)));
+  will-change:transform;
+}
+.video-stage .vs-frame video { width:100%; height:100%; object-fit:cover; }
+/* Scrim is inside the frame so it clips to the rounded corners; it is almost
+   absent while the clip is a small card and deepens as it takes the screen. */
+.video-stage .vs-scrim {
+  position:absolute; inset:0; pointer-events:none;
+  background:linear-gradient(180deg, rgba(0,0,0,.34) 0%, rgba(0,0,0,0) 36%, rgba(0,0,0,.66) 100%);
+  opacity:calc(0.2 + 0.8 * var(--r7p));
+}
+/* Caption sits OUTSIDE .vs-frame: inside it, the frame's scale() would stretch
+   the type as the clip grew. */
+.video-stage .vs-copy {
+  position:absolute; left:0; right:0; bottom:clamp(48px,9vh,100px); z-index:2;
+  padding:0 var(--sp-xxl); text-align:center; color:var(--body-on-dark);
+  opacity:var(--r7p); transform:translateY(calc((1 - var(--r7p)) * 22px));
+  pointer-events:none;
+}
+.video-stage .vs-copy .eyebrow { color:rgba(255,255,255,.58); }
+.video-stage .vs-copy p {
+  max-width:640px; margin:var(--sp-xs) auto 0; color:rgba(255,255,255,.88);
+}
+/* Phones: a 16:9 clip object-fit:cover into a tall portrait viewport throws
+   away most of the frame, so the stage becomes a centred full-width band on
+   black that still grows from inset to edge to edge. */
+@media (max-width:734px) {
+  .video-stage .vs-track { height:200vh; }
+  .video-stage .vs-frame {
+    width:100%; height:auto; aspect-ratio:16/9;
+    transform:scale(calc(0.78 + 0.22 * var(--r7p)));
+    border-radius:calc(var(--r-md) * (1 - var(--r7p)));
+  }
+  /* height:100% against an auto-height parent let the clip overhang the
+     frame on a phone; the band is aspect-ratio driven here instead. */
+  .video-stage .vs-frame video { height:auto; aspect-ratio:16/9; }
+  /* Phone: stack the caption directly under the band instead of pinning it
+     to the bottom of the viewport, so the clip and its line read as one
+     block rather than being separated by a screenful of black. */
+  .video-stage .vs-sticky { flex-direction:column; gap:var(--sp-lg); }
+  .video-stage .vs-copy { position:static; padding:0 var(--sp-lg); }
+  .video-stage .vs-copy p { font-size:19px; line-height:1.32; letter-spacing:0; }
+}
+/* Reduced motion: no sticky, no track, no transform — a plain full-width
+   block with the caption underneath it, which is what the page had before. */
+@media (prefers-reduced-motion: reduce) {
+  .video-stage .vs-track { height:auto; }
+  .video-stage .vs-sticky { position:static; height:auto; display:block; }
+  .video-stage .vs-frame {
+    transform:none; border-radius:0; height:auto; aspect-ratio:16/9;
+  }
+  .video-stage .vs-scrim { display:none; }
+  .video-stage .vs-copy {
+    position:static; opacity:1; transform:none;
+    padding:var(--sp-md) var(--sp-xxl) var(--sp-xl);
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   ROUND 7 — the OTHER option Noah floated: "smaller and cleaner". Not used by
+   any published page; work/_r7opt-sailing-small.html renders it so the two can
+   be compared side by side. A narrow, centred, rounded player on parchment
+   instead of a full-width slab.
+   --------------------------------------------------------------------------- */
+.video-inset { padding:var(--sp-section) var(--sp-lg); background:var(--canvas-parchment); }
+.video-inset figure { margin:0 auto; max-width:760px; }
+.video-inset video {
+  width:100%; height:auto; display:block;
+  border-radius:var(--r-lg); overflow:hidden; background:var(--surface-black);
+  box-shadow:0 18px 50px rgba(0,0,0,.14);
+}
+.video-inset figcaption {
+  margin-top:var(--sp-md); text-align:center;
+  font-size:14px; line-height:1.43; letter-spacing:-0.224px; color:var(--ink-muted-48);
+}
