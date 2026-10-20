@@ -138,7 +138,12 @@ nav.global .nav-links { display:flex; gap:36px; }
 .btn-ghost-on-dark { background:transparent; color:var(--primary-on-dark); box-shadow:inset 0 0 0 1px var(--primary-on-dark); }
 .link { color:var(--primary); text-decoration:none; font-size:17px; letter-spacing:-0.374px; }
 .link:hover { text-decoration:underline; }
-.on-dark .link, .tile.dark .link { color:var(--primary-on-dark); }
+/* ROUND 9: .tile.dark was dropped from this selector. Tile links are now the
+   white-on-pill treatment defined in the Work tiles block below, and this rule
+   (3 classes) was outranking it (2 classes) and tinting the Layering and Sailing
+   pills blue while the other three stayed white. Non-tile dark sections keep the
+   blue link unchanged. */
+.on-dark .link { color:var(--primary-on-dark); }
 
 /* ---------- Hero (homepage, text variant) ---------- */
 .hero {
@@ -203,12 +208,47 @@ nav.global .nav-links { display:flex; gap:36px; }
 }
 .tile.dark { background:var(--surface-tile-1); color:var(--body-on-dark); }
 .tile.dark-2 { background:var(--surface-tile-2); color:var(--body-on-dark); }
-.tile.light { background:var(--canvas); color:var(--ink); }
+/* ROUND 9 (dad's feedback, BW Hands): .tile.light used to set color:var(--ink),
+   which put near-black caption text over a photographic background. BW Hands was
+   the only tile with that class and it is exactly the one reported unreadable.
+   Every tile carries a full-bleed photo behind its copy, so every tile now gets
+   white copy plus the same scrim text-shadow. The .light class is left in place
+   but now only colours the fallback background behind the image, not the text. */
+.tile.light { background:var(--canvas); color:var(--body-on-dark); }
 .tile .img-slot { position:absolute; inset:0; background-size:cover; background-position:center; opacity:.9; }
-.tile .content { position:relative; z-index:2; }
-.tile.dark .content, .tile.dark-2 .content { text-shadow:0 2px 20px rgba(0,0,0,0.5); }
+.tile .content { position:relative; z-index:2; text-shadow:0 2px 20px rgba(0,0,0,0.5); }
 .tile h2 { font-family:var(--font-display); font-weight:600; font-size:34px; letter-spacing:-0.374px; margin-bottom:var(--sp-xs); }
 .tile p { font-size:17px; opacity:.85; margin-bottom:var(--sp-md); }
+
+/* ===========================================================================
+   ROUND 9 - "View case study" tile link visibility (dad's feedback)
+   PROBLEM, measured not guessed: .link resolves to var(--primary) #0066cc, and
+   the rule that lifts it to the brighter #2997ff only ever listed .tile.dark.
+   .tile.dark-2 (Creative Focus [renamed from Wide Span Sheds in round 10],
+   The Lost Spring) and .tile.light (BW Hands)
+   were never covered, so three of the five tiles painted a dark blue link
+   straight onto a photograph. On Wide Span Sheds it landed on the subject's
+   black t-shirt and vanished entirely - the exact thing that was reported.
+   FIX: a tile link is no longer tinted text. It is a translucent dark pill with
+   a white hairline and a white label, so its contrast comes from its own
+   backplate and no longer depends on whatever photo sits behind it. Applied to
+   all five tiles; nothing outside the tile row uses .tile .link.
+   =========================================================================== */
+.tile .link {
+  display:inline-flex; align-items:center; justify-content:center;
+  color:var(--body-on-dark); font-weight:600; text-shadow:none;
+  padding:10px var(--sp-md); border-radius:var(--r-pill);
+  background:rgba(0,0,0,0.55);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,0.45);
+  -webkit-backdrop-filter:saturate(140%) blur(8px);
+  backdrop-filter:saturate(140%) blur(8px);
+  transition:background .3s var(--ease), box-shadow .3s var(--ease);
+}
+.tile:hover .link, .tile:focus-visible .link {
+  background:rgba(0,0,0,0.78);
+  box-shadow:inset 0 0 0 1px var(--body-on-dark);
+  text-decoration:none;
+}
 
 /* ---------- Generic section ---------- */
 .section { padding:var(--sp-section) 40px; max-width:980px; margin:0 auto; }
@@ -602,7 +642,8 @@ html.lb-lock { overflow:hidden; }
 
 /* ===========================================================================
    PLAYABLE FILM BLOCKS (Round 6)
-   Lost Spring and Wide Span Sheds are film jobs, and until round 6 both case
+   Lost Spring and Creative Focus (formerly Wide Span Sheds) are film jobs,
+   and until round 6 both case
    studies showed them as frame-grab stills because there was very little
    stills photography on either shoot. Round 6 replaces the bulk of those
    stills with the delivered films themselves.
